@@ -1,0 +1,15 @@
+gcloud auth login
+
+gcloud docker -- push gcr.io/plataforma-mexico-covid19/pmc-service:0.0.1
+
+kubectl config view
+
+kubectl create deployment pmc-service \
+  --image=gcr.io/plataforma-mexico-covid19/pmc-service:0.0.1
+
+kubectl get deployments
+
+kubectl create service loadbalancer pmc-service --tcp=8090:8080
+
+kubectl get services
+

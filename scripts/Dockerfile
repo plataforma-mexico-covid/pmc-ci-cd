@@ -56,7 +56,7 @@ RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - \
     docker-ce-cli${DOCKER_CLI_VERSION} \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* \
- && groupadd --gid 994 docker \
+ && groupadd --gid 412 docker \
  && usermod -aG docker jenkins
 
 # Install Gcloud

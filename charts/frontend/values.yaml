@@ -1,13 +1,13 @@
-# Default values for platformaui.
+# Default values for frontend.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: gcr.io/plataforma-mexico-covid19/pmcovid19
-  version: "1.0.6"
-  pullPolicy: IfNotPresent
+  repository: gcr.io/plataforma-mexico-covid19/pmcwebcovid19
+  version: "1.0.10"
+  pullPolicy: Always
 
 imagePullSecrets: []
 nameOverride: ""
@@ -15,7 +15,7 @@ fullnameOverride: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
-  create: false
+  create: true
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
@@ -36,6 +36,7 @@ securityContext: {}
 service:
   type: LoadBalancer
   port: 80
+  secureport: 443
 
 ingress:
   enabled: false

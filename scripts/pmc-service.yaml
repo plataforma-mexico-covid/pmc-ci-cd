@@ -1,0 +1,60 @@
+podTemplate(
+        label: 'mypod',
+        inheritFrom: 'default',
+        containers: [
+            containerTemplate(
+	             name: 'sbt',
+	             image: 'gcr.io/plataforma-mexico-covid19/gcloudjnlp:1.0',
+	             ttyEnabled: true,
+	             command: 'cat'
+	             )
+	        ],
+	        volumes: [
+	            hostPathVolume(
+	                    hostPath: '/var/run/docker.sock',
+	                    mountPath: '/var/run/docker.sock'
+	                ),
+	            hostPathVolume(
+	                    hostPath: '/usr/bin/docker',
+	                    mountPath: '/usr/bin/docker'
+	                ),
+	            configMapVolume(
+	                    mountPath: '/home/jenkins/kubeconfig',
+	                    configMapName: 'a-random-map')
+	            ]
+	    ){
+	        node('mypod') {
+	            stage('Checkout') {
+	                   git branch: 'master', credentialsId: 'github_credentials', url: 'https://github.com/plataforma-mexico-covid/pmc-service.git'
+	               }
+                stage('Build docker') {
+
+	                     echo "Compiling..."
+	                     sh 'pwd'
+	                     sh 'whoami'
+	                     sh 'ls -ng /var/run/docker.sock'
+	                     container ('sbt') {
+	                            sh 'pwd'
+	                            sh 'whoami'
+	                            sh 'ls -lrth /var/run/docker.sock'
+	                            sh 'pwd'
+	                            sh 'gradlew clean build'
+	                     }
+                }
+
+	            # stage('Checkout') {
+	            #     git branch: 'master', credentialsId: 'github_credentials', url: 'git@github.com:Decooda/kubernetes.git'
+	            # }
+	            #   stage('Deploy') {
+	            #           withAWS(credentials:'ecr_cicd') {
+	            #               container('sbt') {
+	            #                   sh 'pwd'
+	            #                   sh 'export KUBECONFIG=/home/jenkins/kubeconfig/kubeconfig'
+	            #                   sh 'ls -lrtha /home/jenkins/kubeconfig'
+	            #                   echo "Deploying..."
+	            #                   sh 'cd charts && ls -lrth && sh install_chart.sh corpusanalysis testing /home/jenkins/kubeconfig/kubeconfig upgrade'
+	            #               }
+	            #           }
+	            #   }
+	        }
+	    }

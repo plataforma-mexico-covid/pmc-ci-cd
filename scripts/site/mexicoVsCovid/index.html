@@ -19,6 +19,17 @@
     />
     <link rel="stylesheet" href="css/estilos.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Hotjar Tracking Code for http://plataformacovid19.mx/ -->
+<script>
+  (function(h,o,t,j,a,r){
+      h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+      h._hjSettings={hjid:1755269,hjsv:6};
+      a=o.getElementsByTagName('head')[0];
+      r=o.createElement('script');r.async=1;
+      r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+      a.appendChild(r);
+  })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+</script>
   </head>
   <body>
     <header class="header">
@@ -46,57 +57,61 @@
         </nav>
       </div>
     </header>
-
-    <section id="project" class="project">
-      <figure class="project-imageContainer"></figure>
+    <section id="project-hero" class="project">
+      <figure class="project-imageContainer">
       <div class="container">
         <article class="project">
-          <figure class="project-imageContainer">
-            <img class="project-image" src="images/hero.png" alt="Logo " />
-          </figure>
-        </article>
+          <figure class="event-imageBanner">
+    
+              <a title="bannerbeta"
+               href="https://beta.ayudandome.mx">
+               <img src="images/bannerbeta.png" 
+               alt="Imagen Banner version beta"/></a>
+            </figure>
+         </article>
       </div>
     </section>
     <section id="project" class="project">
-      <figure class="project-imageContainer"></figure>
       <div class="container">
-        <article class="project">
-          <figure class="project-imageContainer">
-          <figure class="event-imageContainer">
-            <a title="ayuda"
-             href="https://docs.google.com/forms/d/1hSYwpj-Pscy9nWKckSyG1owKzVXsxTR-NkLq5S4dgdk/viewform"><img
-             src="images/card1.png" 
-             alt="Card2"/></a>
-          </figure>
-        </article>
-      </div>
-      <figure class="project-imageContainer"></figure>
-      <div class="container">
+        <div class="left">
         <article class="project">
           <figure class="project-imageContainer">
           <figure class="event-imageContainer">
             <a title="donatarios"
-             href="https://docs.google.com/forms/d/1HRLViZpBCSEdvDjwsat747X4OjPlPJOidaz_gniIOmQ/viewform"><img
-             src="images/card2.png" 
-             alt="Card2"/></a>
+            href="https://docs.google.com/forms/d/1HRLViZpBCSEdvDjwsat747X4OjPlPJOidaz_gniIOmQ/viewform"><img
+            src="images/card2.png" 
+            alt="Card2"/></a>
           </figure>
         </article>
       </div>
-      <figure class="project-imageContainer"></figure>
+    </div>
       <div class="container">
+        <div class="right">
+        <article class="project">
+          <figure class="project-imageContainer">
+          <figure class="event-imageContainer">         
+            <a title="ayuda"
+            href="https://docs.google.com/forms/d/1hSYwpj-Pscy9nWKckSyG1owKzVXsxTR-NkLq5S4dgdk/viewform"><img
+            src="images/card1.png" 
+            alt="Card1"/></a>
+          </figure>
+        </article>
+      </div>
+    </div>
+     <div class="container">
+        <div class="center">
         <article class="project">
           <figure class="project-imageContainer">
           <figure class="event-imageContainer">
             <a title="voluntarios"
              href="https://docs.google.com/forms/d/e/1FAIpQLSc0wvAPaFfjZbWefnCU9IAIEBtPrjEoZWkMc3ksiPmgw3v3PA/viewform"><img
              src="images/card3.png" 
-             alt="Card2"/></a>
+             alt="Card3"/></a>
           </figure>
         </article>
       </div>
-    </section>
-      </div>
-    </section>
+  </div>
+  </section>
     <footer class="footer">
       <div class="container">
         <div class="social">
@@ -115,8 +130,8 @@
         </div>
         <div>
           <p>
-            Plataforma México Vs Covid-19 Todos los derechos reservados.
-
+            Plataforma México Vs Covid-19 <Br/> 
+            <a href="pdp.html">Politica de privacidad</a>
             <!--<br />Diseñado con 💖 por
             <a href="https://taniasosa.com">Tania Sosa</a>-->
           </p>
@@ -124,12 +139,9 @@
       </div>
     </footer>
     <script>
-      // console.log('Hola mundo! es mi primera linea en JS');
       const ipad = window.matchMedia("screen and (max-width: 767px)");
       const menu = document.querySelector(".menu");
-      // console.log(menu);
       const burgerButton = document.querySelector("#burger-menu");
-      // console.log(burgerButton);
       ipad.addListener(validation);
       function validation(event) {
         if (event.matches) {

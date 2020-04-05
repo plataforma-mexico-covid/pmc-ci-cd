@@ -3,6 +3,21 @@ body {
   margin: 0px;
 }
 
+.left {
+  float: left;
+}
+.right {
+  float: right;
+}
+.center {
+  float: center;
+}
+
+p {
+  margin: 20px;
+  text-align: justify;
+}
+
 h1 {
   font-size: 40px;
   line-height: 1em;
@@ -23,23 +38,21 @@ h2 {
   max-width: 100%;
 }
 
-.hero {
-  height: 600px;
-  background-size: 300px 300px;
-  background-repeat: no-repeat;
-  background-color: #1b2127;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
 .project {
-  padding: 20px;
+  padding: 10px;
   display: flex;
-  background: white;
   align-items: center;
+  justify-content: center;
+  margin: 1rem;
+  background: white;
   flex-wrap: wrap;
   max-width: 100%;
+  margin-top: 1rem;
+  display: block;
+}
+
+.project-banner {
+  max-width: 500%;
 }
 
 .project-imageContainer img {
@@ -97,7 +110,7 @@ figure.logo {
 }
 
 .event-imageContainer {
-  max-width: 700px;
+  max-width: 280px;
   flex: 1;
   margin: 0 auto;
   display: inherit;
@@ -107,10 +120,15 @@ figure.logo {
   flex-wrap: inherit;
 }
 
-.event img {
-  width: 320px;
-  height: 290px;
-  object-fit: cover;
+.event-imageBanner {
+  max-width: 600px;
+  flex: 1;
+  margin: 0 auto;
+  display: inherit;
+  justify-content: inherit;
+  align-items: inherit;
+  height: inherit;
+  flex-wrap: inherit;
 }
 
 .social-link {
@@ -136,7 +154,6 @@ figure.logo {
 }
 
 .container {
-  /*border: 1px solid red;*/
   max-width: 1000px;
   flex: 1;
   margin: 0 auto;
@@ -158,10 +175,6 @@ figure.logo {
 
 .footer a {
   color: white;
-}
-
-.project {
-  display: block;
 }
 
 @media screen and (max-width: 1023px) {

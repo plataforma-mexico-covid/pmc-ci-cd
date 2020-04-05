@@ -4,8 +4,8 @@ gcloud docker -- push gcr.io/plataforma-mexico-covid19/pmc-service:0.0.1
 
 kubectl config view
 
-kubectl create deployment pmc-service \
-  --image=gcr.io/plataforma-mexico-covid19/pmc-service:0.0.1
+kubectl create deployment pmc-sbt \
+  --image=gcr.io/plataforma-mexico-covid19/gcloudjnlp:1.0.6
 
 kubectl get deployments
 

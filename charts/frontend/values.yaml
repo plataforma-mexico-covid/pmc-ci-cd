@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: gcr.io/plataforma-mexico-covid19/pmcwebcovid19
-  version: "1.0.15"
+  version: "1.0.23"
   pullPolicy: Always
 
 imagePullSecrets: []

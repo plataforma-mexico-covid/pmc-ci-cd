@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: gcr.io/plataforma-mexico-covid19/pmcovid19
-  version: "ayuda.1.0"
+  version: "1.0.10"
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -34,7 +34,7 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: ClusterIP
+  type: LoadBalancer
   port: 80
 
 ingress:

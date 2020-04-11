@@ -46,20 +46,20 @@ RUN groupadd --gid 10000 jenkins && useradd --gid 10000 --uid 10000 jenkins --sh
   && mkdir /logs && chown -R jenkins:jenkins /logs
 
 # install docker
-RUN wget https://download.docker.com/linux/static/stable/x86_64/docker-17.12.1-ce.tgz  \
-  && groupadd --gid 412 docker && useradd --gid 412 --uid 412 docker \
-  && tar zxvf docker-17.12.1-ce.tgz \
-  && chown -R docker:docker docker \
-  && cp docker/* /usr/bin/ \  
-  && usermod -aG docker jenkins 
+#RUN wget https://download.docker.com/linux/static/stable/x86_64/docker-17.12.1-ce.tgz  \
+#  && groupadd --gid 412 docker && useradd --gid 412 --uid 412 docker \
+#  && tar zxvf docker-17.12.1-ce.tgz \
+#  && chown -R docker:docker docker \
+#  && cp docker/* /usr/bin/ \  
+#  && usermod -aG docker jenkins 
 
-#RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - \
-#  && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable" \
-#  && apt-get update \
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - \
+  && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable" \
+  && apt-get update \
 #  && groupadd --gid 412 docker \
-#  && apt-cache policy docker-ce \
-#  && apt install -y docker-ce \
-#  && usermod -aG docker jenkins
+  && apt-cache policy docker-ce \
+  && apt install -y docker-ce \
+  && usermod -aG docker jenkins
 
 # Install Gcloud
 # Downloading gcloud package
@@ -71,15 +71,23 @@ RUN mkdir -p /usr/local/gcloud \
   && /usr/local/gcloud/google-cloud-sdk/install.sh
 
 # Install Gradle
-RUN wget -q https://services.gradle.org/distributions/gradle-3.3-bin.zip \
-    && unzip gradle-3.3-bin.zip -d /opt \
-    && rm gradle-3.3-bin.zip
-ENV GRADLE_HOME /opt/gradle-3.3
+RUN wget -q https://services.gradle.org/distributions/gradle-6.3-bin.zip \
+    && unzip gradle-6.3-bin.zip -d /opt \
+    && rm gradle-6.3-bin.zip \
+    && ls -lrth /opt/gra*
+ENV GRADLE_HOME /opt/gradle-6.3
 
 # entrypoint is used to update docker gid and revert back to jenkins user
 RUN mkdir -p /home/jenkins/entry
 COPY entrypoint.sh /home/jenkins/entry/entrypoint.sh
 RUN chmod +x /home/jenkins/entry/entrypoint.sh
+
+RUN apt-get update -y && apt-get install -y python-pip python-dev build-essential
+
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y git && \
+    apt-get install -y bash
 
 USER jenkins
 # Define working directory
@@ -88,7 +96,15 @@ WORKDIR /home/jenkins
 # Adding the package path to local
 ENV PATH $PATH:/usr/local/gcloud/google-cloud-sdk/bin
 
-ENV PATH $PATH:/opt/gradle-3.3/bin
+ENV PATH $PATH:/opt/gradle-6.3/bin
+
+RUN pip install flask
+COPY app.py app.py
 
 # Checking that aws, kubectl and helm are correctly installed, 
-RUN kubectl help && gcloud version && gradle --version
+RUN kubectl help && gcloud version && gradle --version && python --version
+
+#RUN python app.py
+#EXPOSE 5000
+#ENTRYPOINT ["python"]
+CMD ["cat"]

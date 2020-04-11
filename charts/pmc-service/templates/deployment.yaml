@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "pmc-service.fullname" . }}
+  labels:
+    {{- include "pmc-service.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "pmc-service.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "pmc-service.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "pmc-service.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.version }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8090
+              protocol: TCP      
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}                                      
+          env:
+          - name: SECRET_EMAIL_USERNAME
+            valueFrom:
+              secretKeyRef:
+                key: username
+                name: {{ .Values.secrets.email }}
+          - name: SECRET_EMAIL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: {{ .Values.secrets.email }}
+          - name: URL_CONFIRM_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: url.confirm.token
+                name: {{ .Values.secrets.plataform }} 
+          - name: URL_CHANGE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: url.confirm.token
+                name: {{ .Values.secrets.plataform }} 
+          - name: HOURS_WAIT_REGISTER
+            valueFrom:
+              secretKeyRef:
+                key: ayuda.hoursToWaitRegister
+                name: {{ .Values.secrets.plataform }} 
+          - name: REGISTER_AVAILABLE_PERUSER
+            valueFrom:
+              secretKeyRef:
+                key: ayuda.registerAvailablePeruser
+                name: {{ .Values.secrets.plataform }} 
+          - name: SECRET_DB_URL
+            valueFrom:
+              secretKeyRef:
+                key: url
+                name: {{ .Values.secrets.db }} 
+          - name: SECRET_DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                key: username
+                name: {{ .Values.secrets.db }} 
+          - name: SECRET_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: {{ .Values.secrets.db }} 
+          - name: SECRET_DB_SCHEMA
+            valueFrom:
+              secretKeyRef:
+                key: schema
+                name: {{ .Values.secrets.db }} 
+        - name: cloudsql-proxy
+          image: "{{ .Values.gcloud.repository }}:{{ .Values.gcloud.version }}" 
+          imagePullPolicy: {{ .Values.gcloud.pullPolicy }}
+          {{- with .Values.preconfigureCommand }}
+          command:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}          
+          volumeMounts:
+          - mountPath: /secrets/cloudsql
+            name: pmc-secret-db-proxy 
+      volumes:
+      - name: pmc-secret-db-proxy
+        secret:
+          secretName: pmc-secret-db-proxy     
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

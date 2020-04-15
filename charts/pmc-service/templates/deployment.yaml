@@ -52,7 +52,7 @@ spec:
           - name: URL_CHANGE_PASSWORD
             valueFrom:
               secretKeyRef:
-                key: url.confirm.token
+                key: url.change.password
                 name: {{ .Values.secrets.plataform }} 
           - name: HOURS_WAIT_REGISTER
             valueFrom:

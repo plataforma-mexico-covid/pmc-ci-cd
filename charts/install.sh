@@ -5,5 +5,5 @@ echo "3er parametro = ruta al archivo kubeconfig"
 echo "4to parametro = install|upgrade"
 echo "5to paremetro = version a instalar "
 echo "$4 this helm chart $1..."
-helm $4 $1-helm --namespace=$2 --kubeconfig=$3 ./$1 --set image.version=$5 && \
+helm $4 $1-helm --namespace=$2 --kubeconfig=$3 ./$1 --set image.version=$5 --set-string timestamp=$(date +%s) && \
 echo $5 > ./$1/version

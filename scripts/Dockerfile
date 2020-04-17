@@ -1,6 +1,4 @@
-FROM ubuntu:16.04
-
-user root 
+FROM ubuntu:18.04
 
 # install prerequisite debian packages
 RUN apt-get update && \
@@ -22,7 +20,7 @@ ARG GOSU_VERSION=1.10
 RUN dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
  && wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch" \
  && chmod +x /usr/local/bin/gosu \
- && gosu nobody true 
+ && gosu nobody true
 
 
 # Using 3.1.1
@@ -50,8 +48,8 @@ RUN groupadd --gid 10000 jenkins && useradd --gid 10000 --uid 10000 jenkins --sh
 #  && groupadd --gid 412 docker && useradd --gid 412 --uid 412 docker \
 #  && tar zxvf docker-17.12.1-ce.tgz \
 #  && chown -R docker:docker docker \
-#  && cp docker/* /usr/bin/ \  
-#  && usermod -aG docker jenkins 
+#  && cp docker/* /usr/bin/ \
+#  && usermod -aG docker jenkins
 
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - \
   && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable" \
@@ -79,32 +77,73 @@ ENV GRADLE_HOME /opt/gradle-6.3
 
 # entrypoint is used to update docker gid and revert back to jenkins user
 RUN mkdir -p /home/jenkins/entry
-COPY entrypoint.sh /home/jenkins/entry/entrypoint.sh
-RUN chmod +x /home/jenkins/entry/entrypoint.sh
+#COPY entrypoint.sh /home/jenkins/entry/entrypoint.sh
+#RUN chmod +x /home/jenkins/entry/entrypoint.sh
 
 RUN apt-get update -y && apt-get install -y python-pip python-dev build-essential
 
 RUN apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y git && \
-    apt-get install -y bash
+    apt-get install -y git &&  \
+    apt-get install -y bash && \
+    apt-get install -y npm && \
+    npm install npm@latest -g && \
+    npm cache clean -f && \
+    npm install -g n && \
+    n stable
+#curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.35.1/install.sh | bash && \
+    #nvm install v12.0
+    #&& \
+    #apt-get install -y nodejs-legacy && \
+    #npm install -g n && \
+    #npm install -g @angular/cli
+
 
 USER jenkins
 # Define working directory
 WORKDIR /home/jenkins
 
-# Adding the package path to local
-ENV PATH $PATH:/usr/local/gcloud/google-cloud-sdk/bin
+COPY service-account-key.json ./
+COPY kubeconfig.yaml ./
+COPY deployweb.sh ./
+ENV GOOGLE_APPLICATION_CREDENTIALS=/home/jenkins/service-account-key.json
+ENV KUBECONFIG=/home/jenkins/kubeconfig.yaml
 
-ENV PATH $PATH:/opt/gradle-6.3/bin
+ARG GIT_USER
+ARG GIT_PASS
+ENV GIT_USER=${GIT_USER}
+ENV GIT_PASS=${GIT_PASS}
+
+# Adding the package path to local
+#ENV PATH $PATH:/usr/local/gcloud/google-cloud-sdk/bin
+#ENV PATH $PATH:/opt/gradle-6.3/bin:/bin/bash
 
 RUN pip install flask
+#&& npm install npm@latest
+#&& \
+#    npm install @angular/cli
+#ENV PATH $PATH:/home/jenking/node_modules/.bin
+RUN npm install npm@latest
+ENV PATH $PATH:/home/jenking/node_modules/.bin
+RUN npm install @angular/cli
+#ENV PATH $PATH:/home/jenkins/node_modules/@angular/cli/bin
+
+# Adding the package path to local
+ENV PATH $PATH:/usr/local/gcloud/google-cloud-sdk/bin
+ENV PATH $PATH:/opt/gradle-6.3/bin:/bin/bash
+#ENV PATH $PATH:/home/jenking/node_modules/.bin
+ENV PATH $PATH:/home/jenkins/node_modules/@angular/cli/bin
 COPY app.py app.py
 
-# Checking that aws, kubectl and helm are correctly installed, 
-RUN kubectl help && gcloud version && gradle --version && python --version
+RUN git config --global user.email "cicd@plataformacovid19.mx" && \
+  git config --global user.name "CICD USER"
+ENV NG_CLI_ANALYTICS=ci
+
+# Checking that aws, kubectl and helm are correctly installed,
+#RUN kubectl help && gcloud version && gradle --version && python --version &&
+#RUN npm version && ng version
 
 #RUN python app.py
 #EXPOSE 5000
 #ENTRYPOINT ["python"]
-CMD ["cat"]
+#CMD ["app.py"]

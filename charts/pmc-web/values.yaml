@@ -9,6 +9,8 @@ image:
   version: "1.0.23"
   pullPolicy: Always
 
+timestamp: ""
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""

@@ -9,6 +9,8 @@ image:
   version: 0.0.8
   pullPolicy: Always
 
+timestamp: ""
+
 gcloud:
   name: cloudsql-proxy
   repository: gcr.io/cloudsql-docker/gce-proxy

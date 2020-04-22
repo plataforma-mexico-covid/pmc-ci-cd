@@ -41,6 +41,10 @@ spec:
             httpGet:
               path: /
               port: http
+          {{- with .Values.preconfigureCommand }}
+          command:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

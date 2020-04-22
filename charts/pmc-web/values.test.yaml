@@ -33,7 +33,14 @@ securityContext: {}
   #   - ALL
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
-  # runAsUser: 1000
+  # runAsUser: 1000  
+
+preconfigureCommand:
+  - sh
+  - -exc
+  - |
+    mv /usr/share/nginx/html/covid19/assets/rutas_test.js /usr/share/nginx/html/covid19/assets/rutas.js
+    exec nginx -g 'daemon off;'
 
 service:
   type: ClusterIP

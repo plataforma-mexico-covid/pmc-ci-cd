@@ -85,7 +85,12 @@ spec:
             valueFrom:
               secretKeyRef:
                 key: schema
-                name: {{ .Values.secrets.db }} 
+                name: {{ .Values.secrets.db }}
+          - name: GOOGLE_MAPS_APIKEY
+            valueFrom:
+              secretKeyRef:
+                key: google.apiKey
+                name: pmc-secret-platform
         - name: cloudsql-proxy
           image: "{{ .Values.gcloud.repository }}:{{ .Values.gcloud.version }}" 
           imagePullPolicy: {{ .Values.gcloud.pullPolicy }}

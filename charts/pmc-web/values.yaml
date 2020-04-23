@@ -35,6 +35,14 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+preconfigureCommand:
+  - sh
+  - -exc
+  - |
+    mv /usr/share/nginx/html/covid19/assets/config_prod.json /usr/share/nginx/html/covid19/assets/config.json
+    rm -rf /usr/share/nginx/html/covid19/assets/config_*.json
+    exec nginx -g 'daemon off;'
+
 service:
   type: ClusterIP
   port: 8084

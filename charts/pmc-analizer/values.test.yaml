@@ -1,26 +1,43 @@
-# Default values for frontend.
+# Default values for pmc-analizer.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: gcr.io/plataforma-mexico-covid19/pmcwebcovid19
-  version: "1.0.23"
+  repository: gcr.io/plataforma-mexico-covid19/pmc-analizer
+  version: 0.0.1
   pullPolicy: Always
+  # Overrides the image tag whose default is the chart version.
+  tag: ""
 
+timestamp: ""
+
+gcloud:
+  name: cloudsql-proxy
+  repository: gcr.io/cloudsql-docker/gce-proxy
+  version: 1.16
+  pullPolicy: IfNotPresent
+
+preconfigureCommand:
+  - /cloud_sql_proxy
+  - -instances=plataforma-mexico-covid19:us-central1:pmc-db=tcp:3306
+  - -credential_file=/secrets/cloudsql/plataforma-mexico-covid19-5b6a2f5c8084.json
+  
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
-  create: true
+  create: false
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name:
+  name: ""
+
+podAnnotations: {}
 
 podSecurityContext: {}
   # fsGroup: 2000
@@ -34,9 +51,8 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: LoadBalancer
-  port: 80
-  secureport: 443
+  type: ClusterIP
+  port: 7001
 
 ingress:
   enabled: false
@@ -62,6 +78,13 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
 
 nodeSelector: {}
 

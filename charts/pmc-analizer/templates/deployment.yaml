@@ -1,98 +1,103 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "pmc-service.fullname" . }}
+  name: {{ include "pmc-analizer.fullname" . }}
   labels:
-    {{- include "pmc-service.labels" . | nindent 4 }}
+    {{- include "pmc-analizer.labels" . | nindent 4 }}
 spec:
+{{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
+{{- end }}
   selector:
     matchLabels:
-      {{- include "pmc-service.selectorLabels" . | nindent 6 }}
+      {{- include "pmc-analizer.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      labels:
-        {{- include "pmc-service.selectorLabels" . | nindent 8 }}
       annotations:
         timestamp: "{{ .Values.timestamp }}"
+      labels:
+        {{- include "pmc-analizer.selectorLabels" . | nindent 8 }}
     spec:
-    {{- with .Values.imagePullSecrets }}
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-      serviceAccountName: {{ include "pmc-service.serviceAccountName" . }}
+      {{- end }}
+      serviceAccountName: {{ include "pmc-analizer.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.version }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.version}}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
               containerPort: 8090
-              protocol: TCP      
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}                                      
+              protocol: TCP
           env:
           - name: SECRET_EMAIL_USERNAME
             valueFrom:
               secretKeyRef:
                 key: username
-                name: {{ .Values.secrets.email }}
+                name: pmc-secret-email
           - name: SECRET_EMAIL_PASSWORD
             valueFrom:
               secretKeyRef:
                 key: password
-                name: {{ .Values.secrets.email }}
-          - name: URL_CONFIRM_TOKEN
-            valueFrom:
-              secretKeyRef:
-                key: url.confirm.token
-                name: {{ .Values.secrets.plataform }} 
-          - name: URL_CHANGE_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: url.change.password
-                name: {{ .Values.secrets.plataform }} 
-          - name: HOURS_WAIT_REGISTER
-            valueFrom:
-              secretKeyRef:
-                key: ayuda.hoursToWaitRegister
-                name: {{ .Values.secrets.plataform }} 
-          - name: REGISTER_AVAILABLE_PERUSER
-            valueFrom:
-              secretKeyRef:
-                key: ayuda.registerAvailablePeruser
-                name: {{ .Values.secrets.plataform }} 
+                name: pmc-secret-email
           - name: SECRET_DB_URL
             valueFrom:
               secretKeyRef:
                 key: url
-                name: {{ .Values.secrets.db }} 
+                name: pmc-secret-db
           - name: SECRET_DB_USERNAME
             valueFrom:
               secretKeyRef:
                 key: username
-                name: {{ .Values.secrets.db }} 
+                name: pmc-secret-db
           - name: SECRET_DB_PASSWORD
             valueFrom:
               secretKeyRef:
                 key: password
-                name: {{ .Values.secrets.db }} 
+                name: pmc-secret-db
           - name: SECRET_DB_SCHEMA
             valueFrom:
               secretKeyRef:
                 key: schema
-                name: {{ .Values.secrets.db }}
-          - name: GOOGLE_MAPS_APIKEY
+                name: pmc-secret-db
+          - name: WHATSAPP_URL
             valueFrom:
               secretKeyRef:
-                key: google.apiKey
-                name: pmc-secret-platform
-          - name: URL_ANALIZER
-            value: {{ .Values.env.analizer }}
+                key: whastapp.url
+                name: pmc-secret-whatsapp
+          - name: WHATSAPP_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: whastapp.token
+                name: pmc-secret-whatsapp
+          - name: WHATSAPP_KILOMETROS
+            valueFrom:
+              secretKeyRef:
+                key: whastapp.kilometros
+                name: pmc-secret-whatsapp
+          - name: WHATSAPP_NOTIFICA_SOLICITA
+            valueFrom:
+              secretKeyRef:
+                key: whastapp.notifica.solicitante
+                name: pmc-secret-whatsapp
+          - name: WHATSAPP_MENSAJE_OFRECE
+            valueFrom:
+              secretKeyRef:
+                key: whastapp.mensaje.ofrece
+                name: pmc-secret-whatsapp
+          - name: WHATSAPP_MENSAJE_SOLICITA
+            valueFrom:
+              secretKeyRef:
+                key: whastapp.mensaje.solicita
+                name: pmc-secret-whatsapp
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
         - name: cloudsql-proxy
           image: "{{ .Values.gcloud.repository }}:{{ .Values.gcloud.version }}" 
           imagePullPolicy: {{ .Values.gcloud.pullPolicy }}

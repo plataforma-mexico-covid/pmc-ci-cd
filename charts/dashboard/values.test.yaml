@@ -1,12 +1,16 @@
-# Default values for backend.
+# Default values for dashboard.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: nginx
-  pullPolicy: IfNotPresent
+  repository: gcr.io/plataforma-mexico-covid19/pmcdashboard
+  version: latest
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart version.
+  tag: ""
+timestamp: ""
 
 imagePullSecrets: []
 nameOverride: ""
@@ -14,12 +18,14 @@ fullnameOverride: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
-  create: true
+  create: false
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name:
+  name: ""
+
+podAnnotations: {}
 
 podSecurityContext: {}
   # fsGroup: 2000
@@ -34,16 +40,19 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 80
+  port: 7000
 
 ingress:
-  enabled: false
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
   hosts:
-    - host: chart-example.local
-      paths: []
+    - host: dashboard.ayudando.me
+      paths: 
+        - /
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -60,6 +69,13 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
 
 nodeSelector: {}
 

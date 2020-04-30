@@ -86,16 +86,6 @@ spec:
               secretKeyRef:
                 key: whastapp.notifica.solicitante
                 name: pmc-secret-whatsapp
-          - name: WHATSAPP_MENSAJE_OFRECE
-            valueFrom:
-              secretKeyRef:
-                key: whastapp.mensaje.ofrece
-                name: pmc-secret-whatsapp
-          - name: WHATSAPP_MENSAJE_SOLICITA
-            valueFrom:
-              secretKeyRef:
-                key: whastapp.mensaje.solicita
-                name: pmc-secret-whatsapp
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
         - name: cloudsql-proxy

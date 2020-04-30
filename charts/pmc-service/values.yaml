@@ -28,7 +28,7 @@ secrets:
   db: pmc-secret-db
 
 env:
- analizer: "pmc-analizer-helm:8001"
+ analizer: "http://pmc-analizer-helm:8001"
  
 imagePullSecrets: []
 nameOverride: ""

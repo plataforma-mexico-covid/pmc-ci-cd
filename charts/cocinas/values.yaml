@@ -1,13 +1,15 @@
-# Default values for platformaui.
+# Default values for cocinas.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: gcr.io/plataforma-mexico-covid19/pmcovid19
-  version: 1.0.2
+  repository: gcr.io/plataforma-mexico-covid19/pm_cccovid19
+  version: 1.0.1
   pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart version.
+  tag: ""
 
 imagePullSecrets: []
 nameOverride: ""
@@ -15,12 +17,14 @@ fullnameOverride: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
-  create: false
+  create: true
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name:
+  name: ""
+
+podAnnotations: {}
 
 podSecurityContext: {}
   # fsGroup: 2000
@@ -35,7 +39,7 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 8082
+  port: 8085
 
 ingress:
   enabled: true
@@ -46,10 +50,13 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
   
   hosts:
-    - host: mexicovscovid191.mx
+    - host: plataformacovid19.mx
       paths:
         - /
   tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
@@ -65,6 +72,13 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
 
 nodeSelector: {}
 

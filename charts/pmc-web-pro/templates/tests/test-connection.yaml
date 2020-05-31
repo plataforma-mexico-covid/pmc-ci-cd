@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "pmc-web-pro.fullname" . }}-test-connection"
+  labels:
+    {{- include "pmc-web-pro.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "pmc-web-pro.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never

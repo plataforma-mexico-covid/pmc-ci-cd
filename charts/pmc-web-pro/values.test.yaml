@@ -36,7 +36,8 @@ preconfigureCommand:
   - sh
   - -exc
   - |
-    sh /usr/share/nginx/html/covid19/assets/config_setup.sh
+    mv /usr/share/nginx/html/covid19/assets/config_test.json /usr/share/nginx/html/covid19/assets/config.json
+    rm -rf /usr/share/nginx/html/covid19/assets/config_*.json
     exec nginx -g 'daemon off;'
 
 service:

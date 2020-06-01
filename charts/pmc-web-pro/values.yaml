@@ -9,6 +9,8 @@ image:
   version: 1.0.0
   pullPolicy: Always
 
+timestamp: ""
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
@@ -36,12 +38,14 @@ preconfigureCommand:
   - sh
   - -exc
   - |
-    sh /usr/share/nginx/html/covid19/assets/config_setup.sh
+    cat /usr/share/nginx/html/covid19/assets/config_prod.json
+    mv /usr/share/nginx/html/covid19/assets/config_prod.json /usr/share/nginx/html/covid19/assets/config.json
+    rm -rf /usr/share/nginx/html/covid19/assets/config_*.json
     exec nginx -g 'daemon off;'
 
 service:
   type: ClusterIP
-  port: 8086
+  port: 9086
 
 ingress:
   enabled: true
@@ -51,7 +55,7 @@ ingress:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
     nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
   hosts:
-    - host: ui.ayudando.me
+    - host: mexicovscovid191.mx
       paths:
         - /
   tls: []

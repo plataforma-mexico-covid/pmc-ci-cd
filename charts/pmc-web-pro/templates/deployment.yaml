@@ -13,6 +13,8 @@ spec:
     metadata:
       labels:
         {{- include "pmc-web-pro.selectorLabels" . | nindent 8 }}
+      annotations:
+        timestamp: "{{ .Values.timestamp }}"
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -39,6 +41,16 @@ spec:
             httpGet:
               path: /
               port: http
+          {{- with .Values.preconfigureCommand }}
+          command:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          env:
+          - name: SECRET_ENVIRONMENT
+            valueFrom:
+              secretKeyRef:
+                key: environment
+                name: pmc-secret-web-environment
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
